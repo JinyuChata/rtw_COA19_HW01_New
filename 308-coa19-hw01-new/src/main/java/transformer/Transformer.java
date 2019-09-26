@@ -389,8 +389,8 @@ public class Transformer {
      * */
     public String floatToBinary(String floatStr) {
         //TODO:
-        return floatStr;
-//        return fromDecFractionToFloat(floatStr, 8, 23);
+//        return floatStr;
+        return fromDecFractionToFloat(floatStr, 8, 23);
     }
 
     /**
@@ -421,7 +421,7 @@ public class Transformer {
     }
 
     public static void main(String[] args) {
-        System.out.println(fromDecIntegerToBCD("-451"));
+//        System.out.println(fr);
 //        System.out.println(fromBinFloatToDec("00000000011000000000000000000000", 8,23));
 //        System.out.println(fromDecFractionToFloat("8.816207631167156E-39", 8, 23));
     }
