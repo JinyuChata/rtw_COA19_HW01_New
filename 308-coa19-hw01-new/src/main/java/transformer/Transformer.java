@@ -280,7 +280,11 @@ public class Transformer {
             sb.append(tmp);
         }
 
-        return sb.toString() + s;
+        if (idx == s.length() && flag) {
+            sb.append("0");
+        }
+
+        return sb.toString();
     }
 
     /**
