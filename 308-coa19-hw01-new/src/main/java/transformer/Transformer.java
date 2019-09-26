@@ -299,8 +299,7 @@ public class Transformer {
         int idx = 4;
         StringBuilder sb = new StringBuilder();
         String sign = s.substring(0, idx);
-        if (sign.equals("1100")) sb.append("+");
-        else sb.append("-");
+        if (sign.equals("1101")) sb.append("-");
 
         boolean flag = true;
         int tmp;
@@ -311,6 +310,8 @@ public class Transformer {
             else if (flag) flag = false;
             sb.append(tmp);
         }
+
+        if (flag) sb.append("0");
 
         return sb.toString();
     }
