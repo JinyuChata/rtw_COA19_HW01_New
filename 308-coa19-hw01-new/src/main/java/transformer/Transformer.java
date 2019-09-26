@@ -202,6 +202,19 @@ public class Transformer {
         if (s.equals("01111111100000000000000000000000")) return "+Inf";
 
         int sign = s.charAt(0) - '0';
+
+        if (s.substring(1, 9).equals("00000000")){
+            String frac = s.substring(9);
+            double fact = Math.pow(2, -127);
+            double res = 0;
+            for (char c : frac.toCharArray()) {
+                res += (c-'0')*fact;
+                fact /= 2;
+            }
+
+            return (sign == 1 ? "-" : "") + Double.toString(res);
+
+        }
         String expd = s.substring(1, 1+eLength);
         String sigd = s.substring(1+eLength, 1+eLength+sLength);
         LinkedList<Integer> intList = new LinkedList<>();
@@ -412,7 +425,7 @@ public class Transformer {
 
     public static void main(String[] args) {
 //        System.out.println(fr);
-        System.out.println(fromBinFloatToDec("10110101110100010000000000000000", 8,23));
+        System.out.println(fromBinFloatToDec("00000000010000000000000000000000", 8,23));
     }
 
 }
