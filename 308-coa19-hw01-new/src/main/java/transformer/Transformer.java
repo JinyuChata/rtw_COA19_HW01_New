@@ -248,19 +248,11 @@ public class Transformer {
                 resFrac += (double) fraList.pop() * fact;
             }
 
+            resFrac += resInt;
             String resFracStr = Double.toString(resFrac);
-            System.out.println(resFracStr);
-
-            for (char c : resFracStr.toCharArray()) {
-                if (c == 'E') {
-                    resFracStr = expToDec(resFracStr);
-                    resFracStr = resFracStr.substring(1);
-                    break;
-                }
-            }
 
 
-            return (sign == 1 ? "-" : "") + resInt + "." + ("" + resFracStr).substring(2);
+            return (sign == 1 ? "-" : "") + resFracStr;
         } else {
             return "0.0";
         }
@@ -416,11 +408,8 @@ public class Transformer {
     }
 
     public static void main(String[] args) {
-//        System.out.println(fromDecFractionToFloat("-1.7976931348623157E308", 8, 23));
-
 //        System.out.println(fr);
-//        System.out.println(fromBinFloatToDec("00000000011000000000000000000000", 8,23));
-        System.out.println(fromDecFractionToFloat("-1.55717134475708E-6", 8, 23));
+        System.out.println(fromBinFloatToDec("10110101110100010000000000000000", 8,23));
     }
 
 }
