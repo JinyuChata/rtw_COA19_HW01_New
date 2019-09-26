@@ -295,7 +295,8 @@ public class Transformer {
      */
     public String intToBinary(String numStr) {
         //TODO:
-        return fromDecIntegerToComplement(numStr);
+        return numStr;
+//        return fromDecIntegerToComplement(numStr);
     }
 
     /**
@@ -306,7 +307,8 @@ public class Transformer {
      */
     public String binaryToInt(String binStr) {
         //TODO:
-        return fromComplementToInteger(binStr);
+        return binStr;
+//        return fromComplementToInteger(binStr);
     }
 
     /**
@@ -315,7 +317,8 @@ public class Transformer {
      * */
     public String floatToBinary(String floatStr) {
         //TODO:
-        return fromDecFractionToFloat(floatStr, 8, 23);
+        return floatStr;
+//        return fromDecFractionToFloat(floatStr, 8, 23);
     }
 
     /**
@@ -323,7 +326,8 @@ public class Transformer {
      * */
     public String binaryToFloat(String binStr) {
         //TODO:
-        return fromBinFloatToDec(binStr, 8, 23);
+        return binStr;
+//        return fromBinFloatToDec(binStr, 8, 23);
     }
 
     /**
@@ -331,7 +335,8 @@ public class Transformer {
      * */
     public String decimalToNBCD(String decimal) {
         //TODO:
-        return fromDecIntegerToBCD(fromBCDToInteger(decimal));
+        return decimal;
+//        return fromDecIntegerToBCD(fromBCDToInteger(decimal));
     }
 
     /**
@@ -339,7 +344,8 @@ public class Transformer {
      * */
     public String NBCDToDecimal(String NBCDStr) {
         //TODO:
-        return fromBCDToInteger(NBCDStr);
+        return NBCDStr;
+//        return fromBCDToInteger(NBCDStr);
     }
 
 
