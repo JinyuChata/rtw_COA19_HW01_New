@@ -198,6 +198,9 @@ public class Transformer {
     }
 
     public static String fromBinFloatToDec(String s, int eLength, int sLength) {
+        if (s.equals("11111111100000000000000000000000")) return "-Inf";
+        if (s.equals("01111111100000000000000000000000")) return "+Inf";
+
         int sign = s.charAt(0) - '0';
         String expd = s.substring(1, 1+eLength);
         String sigd = s.substring(1+eLength, 1+eLength+sLength);
