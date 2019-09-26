@@ -5,6 +5,8 @@ import java.util.LinkedList;
 
 public class Transformer {
 
+    static final double FLT_MAX = 3.40282e+038; /* max value */
+
     static String[] bcd = {
             "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001"
     };
@@ -71,6 +73,13 @@ public class Transformer {
     }
 
     public static String fromDecFractionToFloat(String s, int eLength, int sLength) {
+
+        if (Double.parseDouble(s) > FLT_MAX) {
+            return "+Inf";
+        } else if (Double.parseDouble(s) < -FLT_MAX) {
+            return "-Inf";
+        }
+
         for (char c : s.toCharArray()) {
             if (c == 'E') {
                 s = expToDec(s);
@@ -87,11 +96,6 @@ public class Transformer {
         float fracNum = 0;
         int sign = 0;
         int idx = 0;
-
-//        intNum = (int) Math.abs(Float.parseFloat(s));
-//        sign = intNum >= 0 ? 0 : 1;
-//        if (sign == 0) fracNum = Float.parseFloat(s) - intNum;
-//        else fracNum = - Float.parseFloat(s) - Math.abs(intNum);
 
         // Sign & Integer
         for (idx = 0; idx < s.length(); idx++) {
@@ -142,6 +146,7 @@ public class Transformer {
 
         // Current position of Pointer
         int pointerPosOffset = mainBuilder.length();
+        System.out.println("Offset"+pointerPosOffset);
         mainBuilder.append(fracBuilder);
         int beginPosition = 0;
         for (int i = 0; i < mainBuilder.length(); i++) {
@@ -421,6 +426,8 @@ public class Transformer {
     }
 
     public static void main(String[] args) {
+        System.out.println(fromDecFractionToFloat("-1.7976931348623157E308", 8, 23));
+
 //        System.out.println(fr);
 //        System.out.println(fromBinFloatToDec("00000000011000000000000000000000", 8,23));
 //        System.out.println(fromDecFractionToFloat("8.816207631167156E-39", 8, 23));
