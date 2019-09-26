@@ -71,14 +71,27 @@ public class Transformer {
     }
 
     public static String fromDecFractionToFloat(String s, int eLength, int sLength) {
+        for (char c : s.toCharArray()) {
+            if (c == 'E') {
+                s = expToDec(s);
+                break;
+            }
+        }
+
+
         final int MAX_LEN = 32;
         StringBuilder mainBuilder = new StringBuilder();
         StringBuilder fracBuilder = new StringBuilder();
 
         long intNum = 0;
-        double fracNum = 0;
+        float fracNum = 0;
         int sign = 0;
         int idx = 0;
+
+//        intNum = (int) Math.abs(Float.parseFloat(s));
+//        sign = intNum >= 0 ? 0 : 1;
+//        if (sign == 0) fracNum = Float.parseFloat(s) - intNum;
+//        else fracNum = - Float.parseFloat(s) - Math.abs(intNum);
 
         // Sign & Integer
         for (idx = 0; idx < s.length(); idx++) {
@@ -104,8 +117,6 @@ public class Transformer {
             return sign + mainBuilder.toString();
         }
 
-
-        System.out.println(intNum);
 
         // Fraction
         long factorOfFrac = 10;
@@ -151,6 +162,11 @@ public class Transformer {
 
         char[] expd = new char[eLength];
         int offset = (int) Math.pow(2.0, eLength - 1) - 1;
+        if (pointerPosOffset < -offset + 1) {
+
+        } else if (pointerPosOffset > offset) {
+
+        }
         for (int i = 0; i < eLength; i++) expd[i] = '0';
         if (pointerPosOffset > 0) {
             pointerPosOffset--;
@@ -190,17 +206,19 @@ public class Transformer {
         int sign = s.charAt(0) - '0';
         String expd = s.substring(1, 1+eLength);
         String sigd = s.substring(1+eLength, 1+eLength+sLength);
-        LinkedList<Integer> intList = new LinkedList();
-        LinkedList<Integer> fraList = new LinkedList();
+        LinkedList<Integer> intList = new LinkedList<>();
+        LinkedList<Integer> fraList = new LinkedList<>();
 
         int expo = 0;
         for (int i = 0; i < eLength; i++) {
             expo *= 2;
             expo += expd.charAt(i) - '0';
+            System.out.println(expo);
         }
 
         if (expo > 0) {
             expo -= Math.pow(2, eLength - 1) - 1;
+            System.out.println(expo);
             for (char i : sigd.toCharArray()) {
                 fraList.add(i - '0');
             }
@@ -228,16 +246,29 @@ public class Transformer {
             }
 
             double resFrac = 0.0;
+            double fact = 1.0;
+            System.out.println(fraList);
             while (!fraList.isEmpty()) {
-                resFrac /= 2;
-                resFrac += fraList.pop() / 2;
+                fact /= 2.0;
+                resFrac += (double) fraList.pop() * fact;
             }
 
-            return (sign == 1 ? "-" : "") + resInt + "." + ("" + resFrac).substring(2);
+            String resFracStr = Double.toString(resFrac);
+            System.out.println(resFracStr);
+
+            for (char c : resFracStr.toCharArray()) {
+                if (c == 'E') {
+                    resFracStr = expToDec(resFracStr);
+                    resFracStr = resFracStr.substring(1);
+                    break;
+                }
+            }
+
+
+            return (sign == 1 ? "-" : "") + resInt + "." + ("" + resFracStr).substring(2);
         } else {
             return "0.0";
         }
-//		return Float.toString(Float.parseFloat(s));
     }
 
     public static String fromComplementToInteger(String s) {
@@ -268,7 +299,8 @@ public class Transformer {
         int idx = 4;
         StringBuilder sb = new StringBuilder();
         String sign = s.substring(0, idx);
-        if (sign.equals("1101")) sb.append("-");
+        if (sign.equals("1100")) sb.append("+");
+        else sb.append("-");
 
         boolean flag = true;
         int tmp;
@@ -280,11 +312,50 @@ public class Transformer {
             sb.append(tmp);
         }
 
-        if (idx == s.length() && flag) {
-            sb.append("0");
+        return sb.toString();
+    }
+
+    public static String expToDec(String s) {
+        char sign = '+';
+        StringBuilder sb = new StringBuilder();
+        if (s.charAt(0) == '-' || s.charAt(0) == '+') {
+            sign = s.charAt(0);
+            s = s.substring(1);
         }
 
-        return sb.toString();
+        int expPos;
+        int exp = 0;
+        for (expPos = 0; expPos < s.length(); expPos++) {
+            if (s.charAt(expPos) == 'E') {
+                exp = Integer.parseInt(s.substring(expPos + 1));
+                break;
+            }
+        }
+
+        if (exp < 0) {
+            for (int i = 0; i < -exp; i++) {
+                sb.append('0');
+            }
+
+            for (char c : s.toCharArray()) {
+                if (c == 'E') break;
+                if (c <= '9' && c >= '0') sb.append(c);
+            }
+
+            sb.insert(1, '.');
+        } else {
+            for (char c : s.toCharArray()) {
+                if (c == 'E') break;
+                if (c <= '9' && c >= '0') sb.append(c);
+            }
+            int tmp = exp - sb.length() + 1;
+            for (int i = 0; i < tmp; i++) {
+                sb.append('0');
+            }
+            sb.insert(exp + 1, '.');
+        }
+
+        return sign + sb.toString();
     }
 
     /**
@@ -295,8 +366,8 @@ public class Transformer {
      */
     public String intToBinary(String numStr) {
         //TODO:
-        return numStr;
-//        return fromDecIntegerToComplement(numStr);
+//        return numStr;
+        return fromDecIntegerToComplement(numStr);
     }
 
     /**
@@ -307,8 +378,8 @@ public class Transformer {
      */
     public String binaryToInt(String binStr) {
         //TODO:
-        return binStr;
-//        return fromComplementToInteger(binStr);
+//        return binStr;
+        return fromComplementToInteger(binStr);
     }
 
     /**
@@ -326,8 +397,8 @@ public class Transformer {
      * */
     public String binaryToFloat(String binStr) {
         //TODO:
-        return binStr;
-//        return fromBinFloatToDec(binStr, 8, 23);
+//        return binStr;
+        return fromBinFloatToDec(binStr, 8, 23);
     }
 
     /**
@@ -335,8 +406,8 @@ public class Transformer {
      * */
     public String decimalToNBCD(String decimal) {
         //TODO:
-        return decimal;
-//        return fromDecIntegerToBCD(fromBCDToInteger(decimal));
+//        return decimal;
+        return fromDecIntegerToBCD(decimal);
     }
 
     /**
@@ -344,8 +415,14 @@ public class Transformer {
      * */
     public String NBCDToDecimal(String NBCDStr) {
         //TODO:
-        return NBCDStr;
-//        return fromBCDToInteger(NBCDStr);
+//        return NBCDStr;
+        return fromBCDToInteger(NBCDStr);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fromDecIntegerToBCD("-451"));
+//        System.out.println(fromBinFloatToDec("00000000011000000000000000000000", 8,23));
+//        System.out.println(fromDecFractionToFloat("8.816207631167156E-39", 8, 23));
     }
 
 
