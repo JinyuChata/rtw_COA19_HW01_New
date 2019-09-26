@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Transformer {
 
     static final double FLT_MAX = 3.40282e+038; /* max value */
+    static final double TO_ZERO = Math.pow(2, -126);
 
     static String[] bcd = {
             "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001"
@@ -74,44 +75,25 @@ public class Transformer {
 
     public static String fromDecFractionToFloat(String s, int eLength, int sLength) {
 
-        if (Double.parseDouble(s) > FLT_MAX) {
+        eLength = 8; sLength = 23;
+        double src = Double.parseDouble(s);
+        int sign = 0;
+        if (src > FLT_MAX) {
             return "+Inf";
-        } else if (Double.parseDouble(s) < -FLT_MAX) {
+        } else if (src < -FLT_MAX) {
             return "-Inf";
         }
 
-        for (char c : s.toCharArray()) {
-            if (c == 'E') {
-                s = expToDec(s);
-                break;
-            }
-        }
+        if (src < 0) sign = 1;
+        src = Math.abs(src);
 
+        long intNum = (long) src;
+        double fracNum = src - intNum;
+        System.out.println(intNum + " " + fracNum);
 
         final int MAX_LEN = 32;
         StringBuilder mainBuilder = new StringBuilder();
         StringBuilder fracBuilder = new StringBuilder();
-
-        long intNum = 0;
-        float fracNum = 0;
-        int sign = 0;
-        int idx = 0;
-
-        // Sign & Integer
-        for (idx = 0; idx < s.length(); idx++) {
-            char tmp = s.charAt(idx);
-            if (tmp == '+') continue;
-            if (tmp == '-') {
-                sign = 1; continue;
-            }
-            if (tmp == '.') {
-                idx++;
-                break;
-            }
-
-            intNum *= 10;
-            intNum += tmp - '0';
-        }
 
         // 0
         if (s.equals("0.0") || s.equals("+0.0") || s.equals("-0.0")) {
@@ -121,12 +103,20 @@ public class Transformer {
             return sign + mainBuilder.toString();
         }
 
+        if (src < TO_ZERO && src > 0) {
+            // Fraction part to Binary String
+            System.out.println("OK");
+            int cnt = 0;
+            while (cnt <= 148) {
+                fracNum *= 2;
+                if (cnt >= 126) fracBuilder.append(fracNum >= 1 ? '1' : '0');
+                if (fracNum >= 1) fracNum -= 1;
+                cnt++;
+            }
 
-        // Fraction
-        long factorOfFrac = 10;
-        for(; idx < s.length(); idx++) {
-            fracNum += (s.charAt(idx) - '0') / (double) factorOfFrac;
-            factorOfFrac *= 10;
+            fracBuilder.insert(0, sign);
+            fracBuilder.insert(1, "00000000");
+            return fracBuilder.toString();
         }
 
         // Integer part to Binary String
@@ -259,9 +249,18 @@ public class Transformer {
             }
 
             String resFracStr = Double.toString(resFrac);
+            System.out.println(resFracStr);
+
+            for (char c : resFracStr.toCharArray()) {
+                if (c == 'E') {
+                    resFracStr = expToDec(resFracStr);
+                    resFracStr = resFracStr.substring(1);
+                    break;
+                }
+            }
 
 
-            return (sign == 1 ? "-" : "") + resFracStr;
+            return (sign == 1 ? "-" : "") + resInt + "." + ("" + resFracStr).substring(2);
         } else {
             return "0.0";
         }
@@ -417,14 +416,11 @@ public class Transformer {
     }
 
     public static void main(String[] args) {
-        System.out.println(fromDecFractionToFloat("-1.7976931348623157E308", 8, 23));
+//        System.out.println(fromDecFractionToFloat("-1.7976931348623157E308", 8, 23));
 
 //        System.out.println(fr);
 //        System.out.println(fromBinFloatToDec("00000000011000000000000000000000", 8,23));
-//        System.out.println(fromDecFractionToFloat("8.816207631167156E-39", 8, 23));
+        System.out.println(fromDecFractionToFloat("-1.55717134475708E-6", 8, 23));
     }
-
-
-
 
 }
