@@ -280,7 +280,7 @@ public class Transformer {
             sb.append(tmp);
         }
 
-        return sb.toString();
+        return sb.toString() + s;
     }
 
     /**
