@@ -259,18 +259,9 @@ public class Transformer {
             }
 
             String resFracStr = Double.toString(resFrac);
-            System.out.println(resFracStr);
-
-            for (char c : resFracStr.toCharArray()) {
-                if (c == 'E') {
-                    resFracStr = expToDec(resFracStr);
-                    resFracStr = resFracStr.substring(1);
-                    break;
-                }
-            }
 
 
-            return (sign == 1 ? "-" : "") + resInt + "." + ("" + resFracStr).substring(2);
+            return (sign == 1 ? "-" : "") + resFracStr;
         } else {
             return "0.0";
         }
